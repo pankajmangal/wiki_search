@@ -29,9 +29,15 @@ class SearchDetailBloc extends BaseBloc {
     if (isLoading) return;
     isLoading = true;
     _loadingStream.sink.add(true);
-    SearchDetail searchResults = await repository.getSearchDetails(searching);
-    isLoading = false;
-    _loadingStream.sink.add(isLoading);
-    _signUpStream.sink.add(searchResults);
+    repository.getSearchDetails(searching).then((value){
+      isLoading = false;
+      _loadingStream.sink.add(isLoading);
+      _signUpStream.sink.add(value);
+    }).catchError((onError){
+      isLoading = false;
+      _loadingStream.sink.add(isLoading);
+     _errorStream.sink.add(onError);
+    });
+
   }
 }

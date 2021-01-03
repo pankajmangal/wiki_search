@@ -125,11 +125,14 @@ class _SearchResultPageState extends State<SearchResultPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       VerticalGap(gap: 25),
-                      Text("Recent Search",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24
-                        ),),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Text("Recent Search",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24
+                          ),),
+                      ),
                       VerticalGap(gap: 12),
                       Flexible(
                           child: ListView.builder(itemBuilder:
@@ -146,25 +149,37 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 ),
               ),
 
-              VerticalGap(gap: 25),
-              /*pages.isEmpty ? Expanded(
+              Flexible(
                 child: Container(
-                  child: Center(
-                    child: Text("No search result found !!"),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      VerticalGap(gap: 25),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Text("Search Results",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24
+                          ),),
+                      ),
+                      VerticalGap(gap: 12),
+                      Flexible(
+                          child: ListView.builder(itemBuilder:
+                              (context, index) => ListTile(
+                            leading: Icon(Icons.search),
+                            title: Text(pages[index].title),
+                            onTap: (){
+                              _insert(pages[index].title);
+                              Navigator.pushNamed(context, searchDetail, arguments: pages[index].title);
+                            },
+                          ),
+                            itemCount: pages.length,))
+                    ],
                   ),
                 ),
               )
-                  :*/ Expanded(
-                  child: ListView.builder(itemBuilder:
-                      (context, index) => ListTile(
-                        leading: Icon(Icons.search),
-                        title: Text(pages[index].title),
-                        onTap: (){
-                          _insert(pages[index].title);
-                          Navigator.pushNamed(context, searchDetail, arguments: pages[index].title);
-                        },
-                      ),
-                  itemCount: pages.length,))
             ],
           ),
         ),
@@ -181,9 +196,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
     };
     final id = await dbHelper.insert(row);
     print('inserted row id: $id');
+    _query();
   }
 
   void _query() async {
+    recentSearches = List();
     final allRows = await dbHelper.queryAllRows();
     print('query all rows:');
     allRows.forEach((row) => recentSearches.add(row["title"]));

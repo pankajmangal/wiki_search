@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wikipedia_search/utils/AppUtils.dart';
 import 'package:wikipedia_search/utils/Gap.dart';
 
 import 'bloc/search_detail_bloc.dart';
@@ -16,6 +17,7 @@ class _DetailPageState extends State<DetailPage> {
   final SearchDetailBloc searchDetailBloc = SearchDetailBloc();
   String titleExtract = "";
   String title = "";
+  final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
 
   @override
   void initState() {
@@ -30,13 +32,13 @@ class _DetailPageState extends State<DetailPage> {
           print('pages extract -> ');
         });
       } else {
-        // AppUtils.showError(event.message, _globalKey);
+        AppUtils.showError(event.message, _globalKey);
         print(event.message);
       }
     });
 
     searchDetailBloc.errorStream.listen((event) {
-      // AppUtils.showError(event.stackTrace.toString(), _globalKey);
+      AppUtils.showError(event.stackTrace.toString(), _globalKey);
     });
 
     /*searchDetailBloc.loadingStream.listen((event) {
@@ -62,6 +64,7 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _globalKey,
       appBar: AppBar(
         leading: InkWell(
           child: Icon(Icons.arrow_back_rounded),
